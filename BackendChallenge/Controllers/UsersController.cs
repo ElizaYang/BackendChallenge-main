@@ -1,4 +1,5 @@
 using BackendChallenge.Data;
+using BackendChallenge.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,16 +19,42 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet(Name = "GetUsers")]
-    public async Task<ActionResult<string>> Index(CancellationToken token)
+    public async Task<ActionResult<IEnumerable<UserResponses>>> Index([FromHeader]String userToken, CancellationToken token)
     {
-        var x = await _db.Users.FirstOrDefaultAsync(token);
-        return Ok("it's working");
+        if (userToken == null) {
+            return Unauthorized();
+        }
+        
+        // get userId by token
+        var curUserToken = await _db.UserTokens.FindAsync(userToken);
+        if (curUserToken == null) {
+            return NotFound();
+        }
+        // use userId get companyId
+        var curUser = await _db.Users.FindAsync(curUserToken.UserId);
+        if (curUser == null) {
+            return NotFound();
+        }
+
+        /*
+        Description: Returns all active users for the company that the querying user belongs to 
+        Response Type: array of UserResponses - userId, firstName, lastName
+        */
+        return await _db.Users
+            .Where(x => x.CompanyId == curUser.CompanyId)
+            .Select(user => UserToDTO(user))
+            .ToListAsync();
     }
 
-    [HttpGet(Name = "GetMyStaff")]
-    public async Task<ActionResult<string>> Index2(CancellationToken token)
-    {
-        var x = await _db.Users.FirstOrDefaultAsync(token);
-        return Ok("my staff, it's working");
-    }
+    private static UserResponses UserToDTO(User user) => 
+        new UserResponses
+        {
+            UserId = user.UserId,
+            FirstName = user.FirstName,
+            LastName = user.LastName
+            //TenureDays = user.TenureDays,
+            //CompanyId = user.CompanyId
+        };
+
+    
 }
