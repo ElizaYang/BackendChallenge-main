@@ -1,5 +1,5 @@
 # Backend Challenge Starter
-This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the [coding portion](#Coding-Portion) and the [written portion](#written-portion).
+This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the [coding portion](#Coding-Portion):computer: and the [written portion](#written-portion):pencil:.
 
 # Coding Portion
 
@@ -18,7 +18,7 @@ It should display the text "working".
 ```
 https://localhost:7076/test
 ```
-4. :green_heart:Go to swagger to check endpoint details :green_heart:
+4. Go to swagger to check endpoint details :green_heart:
 ```
 https://localhost:7076/swagger/index.html
 ```
@@ -226,3 +226,5 @@ Note that testing of database connectivity may require a separate testing databa
 
 5. Test case: Cancelled request returns 500 Internal Server Error response
     * Same as get users endpoint test case 4.
+    
+### Enjoy and let me know if you have any questions! :hearts:
