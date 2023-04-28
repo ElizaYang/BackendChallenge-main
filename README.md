@@ -1,7 +1,6 @@
 # Backend Challenge Starter
 This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the [coding portion](#Coding-Portion) and the [written portion](#written-portion).
 
-![Product Name Screen Shot](images/screenshot.png)
 # Coding Portion
 
 ##  Running the project
@@ -19,10 +18,11 @@ It should display the text "working".
 ```
 https://localhost:7076/test
 ```
-4. Go to swagger to check endpoint details :green_heart:
+4. :green_heart:Go to swagger to check endpoint details :green_heart:
 ```
 https://localhost:7076/swagger/index.html
 ```
+![Product Name Screen Shot](images/screenshot.png)
 # Written Portion
 
 ## API Questions
