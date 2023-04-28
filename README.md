@@ -19,7 +19,7 @@ It should display the text "working".
 ```
 https://localhost:7076/test
 ```
-4. Go to swagger to check endpoint details
+4. Go to swagger to check endpoint details :green_heart:
 ```
 https://localhost:7076/swagger/index.html
 ```
