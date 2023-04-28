@@ -1,5 +1,6 @@
 # Backend Challenge Starter
-This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the coding portion and the written portion.
+This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the **coding portion**(#Coding Portion) and the **written portion**(# Written Portion).
+
 ![Product Name Screen Shot](images/screenshot.png)
 # Coding Portion
 
@@ -102,19 +103,21 @@ https://localhost:7076/swagger/index.html
     }
     ```
 ## Test Plan
-There are different types of tests:
+The testing strategy for this API includes different types of tests to ensure the overall quality of the system. These include:
+
 1. Unit Testing: User NUnit to ensure that individual functions or methods of the API work as intended.
 2. Integration Testing: To ensure that the interaction between different parts of the API works correctly. Ex: sql connection...
 3. Functional Testing: To ensure that the overall functionality of the API meets the requirements.
-4. Performance Testing: To ensure that the API can handle a heavy load of requests while providing optimal performance. Might need a simulator to generate loads.
+4. Performance Testing: To ensure that the API can handle a heavy load of requests while providing optimal performance. Using a simulator to generate loads...
 
 Below, I will focus on the **functional tests** and I will cover the following aspects:
-* Testing of various types of input to ensure that they are validated correctly and that appropriate error messages are returned.
-* Testing of database connectivity and queries to ensure that data is being retrieved and updated correctly.
-* Testing of response formatting and error messages to ensure that they are displayed correctly.
-* Testing of authentication and authorization to ensure that only authorized users have access to the API.
-* Testing of API endpoints to ensure that they function correctly under various conditions.
-Note: To test the database connectivity, we may need to use a separate testing database or mock the database context to return specific values for testing purposes.
+1. Input Validation: Testing of various types of input to ensure that they are validated correctly, and appropriate error messages are returned.
+2. Response Formatting and Error Messages: Testing of response formatting and error messages to ensure that they are displayed correctly.
+3. API Endpoints: Testing of API endpoints to ensure that they function correctly under various conditions.
+4. Authentication and Authorization: Testing of authentication and authorization to ensure that only authorized users have access to the API.
+5. Database Connectivity: Testing of database connectivity and queries to ensure that data is being retrieved and updated correctly.
+
+Note that testing of database connectivity may require a separate testing database or mock database context to return specific values for testing purposes.
 
 ### Test Cases 
 
