@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BackendChallenge.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("users")]
 public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
@@ -19,31 +19,48 @@ public class UsersController : ControllerBase
     }
     /// <summary>
     /// Returns all active users for the company that the querying user belongs to 
-    /// Response Type: array of UserResponses - userId, firstName, lastName
     /// </summary>
-    [HttpGet(Name = "GetUsers")]
-    public async Task<ActionResult<IEnumerable<UserResponse>>> Index([FromHeader]String userToken, CancellationToken token)
+    /// <param name="userToken">The user token passed in the request header</param>
+    /// <param name="token">Cancellation token</param>
+    /// <returns>An array of UserResponses including userId, firstName, lastName</returns>
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers([FromHeader] String userToken, CancellationToken token)
     {
+        // Check if user token is empty or null
         if (string.IsNullOrWhiteSpace(userToken))
-            {
-                return Unauthorized();
-            }
-        
-        // get token entry from db
-        var curUserToken = await _db.UserTokens.FindAsync(userToken);
-        if (curUserToken == null) {
+        {
+            return Unauthorized();
+        }
+        // Get current user by userToken
+        var currentUser = await GetCurrentUser(userToken);
+        if (currentUser == null)
+        {
             return NotFound();
         }
-        // use current user entry by userId
-        var curUser = await _db.Users.FindAsync(curUserToken.UserId);
-        if (curUser == null) {
-            return NotFound();
-        }
-        var users = await _db.Users
-                .Where(u => u.CompanyId == curUser.CompanyId)
-                .Select(u => new UserResponse { UserId = u.UserId, FirstName = u.FirstName, LastName = u.LastName })
-                .ToListAsync(token);
+        // Get users for the company of the current user
+        var users = await GetUsersForCompany(currentUser.CompanyId, token);
 
         return Ok(users);
+    }
+    private async Task<User?> GetCurrentUser(string userToken)
+    {
+        var userTokenEntity = await _db.UserTokens.FindAsync(userToken);
+        if (userTokenEntity == null)
+        {
+            return null;
+        }
+
+        var user = await _db.Users.FindAsync(userTokenEntity.UserId);
+        return user;
+    }
+
+    private async Task<IEnumerable<UserResponse>> GetUsersForCompany(int companyId, CancellationToken token)
+    {
+        var users = await _db.Users
+            .Where(u => u.CompanyId == companyId)
+            .Select(u => new UserResponse { UserId = u.UserId, FirstName = u.FirstName, LastName = u.LastName })
+            .ToListAsync(token);
+
+        return users;
     }
 }

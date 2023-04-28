@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BackendChallenge.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("incentives")]
 public class IncentivesController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
@@ -19,52 +19,68 @@ public class IncentivesController : ControllerBase
         _db = db;
     }
     /// <summary>
-    /// Returns the incentives that a user is able to see and is eligible to apply for. 
-    /// Response Type: IncentiveResponse
+    /// Returns the incentives that a user is able to see and is eligible to apply for
     /// </summary>
-    [HttpGet(Name = "GetIncentives")]
-    public async Task<ActionResult<IncentiveResponse>> Index([FromHeader] String userToken, CancellationToken token)
+    /// <param name="userToken">The user token passed in the request header</param>
+    /// <param name="token">Cancellation token</param>
+    /// <returns>IncentiveResponse including userId, incentives: array of EligibleIncentiveResponse</returns>
+    [HttpGet]
+    public async Task<ActionResult<IncentiveResponse>> GetIncentives([FromHeader] String userToken, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(userToken))
         {
             return Unauthorized();
         }
 
-        // get token entry from db
-        var curUserToken = await _db.UserTokens.FindAsync(userToken);
-        if (curUserToken == null)
-        {
-            return NotFound();
-        }
-        // use current user entry by userId
-        var curUser = await _db.Users.FindAsync(curUserToken.UserId);
+        // Get the current user based on the given user token
+        var curUser = await GetCurrentUser(userToken, token);
         if (curUser == null)
         {
             return NotFound();
         }
-        var curCompanyId = curUser.CompanyId;
-        var tenureDays = curUser.TenureDays;
 
-        // get current user's role
-        RoleEligibility curRole;
-        var isManager = await _db.ManagementRelationships.FirstOrDefaultAsync(r => r.ManagerId == curUser.UserId);
-        if (isManager == null) {
-            curRole = RoleEligibility.IndividualContributor;
-        } else {
-            curRole = RoleEligibility.Manager;
+        // Returns a list of eligible incentives for the given user
+        var eligibleIncentives = await GetEligibleIncentives(curUser, token);
+
+        return new IncentiveResponse
+        {
+            UserId = curUser.UserId,
+            EligibleIncentiveResponse = eligibleIncentives
+        };
+    }
+    private async Task<User?> GetCurrentUser(string userToken, CancellationToken token)
+    {
+        var curUserToken = await _db.UserTokens.FindAsync(userToken);
+        if (curUserToken == null)
+        {
+            return null;
         }
 
-        // Get the IDs of the incentives that the user is eligible for based on their tenure and role.
+        return await _db.Users.FindAsync(curUserToken.UserId);
+    }
+
+    /// <summary>
+    /// Retrieves a list of eligible incentives for the specified user.
+    /// An incentive is considered eligible if it meets the following criteria:
+    /// - Belongs to the same company as the user.
+    /// - Has a service requirement days less than or equal to the user's tenure days.
+    /// - Has a role eligibility of all or matches the user's current role.
+    /// </summary>
+    private async Task<List<EligibleIncentiveResponse>> GetEligibleIncentives(User user, CancellationToken token)
+    {
+        var tenureDays = user.TenureDays;
+        var curCompanyId = user.CompanyId;
+        var curRole = await GetCurrentUserRole(user, token);
+
         var eligibleIncentiveIds = await _db.Incentives
             .Where(i => i.CompanyId == curCompanyId &&
                         i.ServiceRequirementDays <= tenureDays &&
-                        (i.RoleEligibility == 0 || 
-                        i.RoleEligibility == curRole))
+                        (i.RoleEligibility == 0 ||
+                         i.RoleEligibility == curRole))
             .Select(i => i.IncentiveId)
             .ToListAsync(token);
 
-        // Get the details of the eligible incentives.
-        var eligibleIncentives = await _db.Incentives
+        return await _db.Incentives
             .Where(i => eligibleIncentiveIds.Contains(i.IncentiveId))
             .Select(i => new EligibleIncentiveResponse
             {
@@ -74,11 +90,12 @@ public class IncentivesController : ControllerBase
                 RoleEligibility = i.RoleEligibility
             })
             .ToListAsync(token);
+    }
 
-        return new IncentiveResponse
-        {
-            UserId = curUser.UserId,
-            EligibleIncentiveResponse = eligibleIncentives
-        };
+    private async Task<RoleEligibility> GetCurrentUserRole(User user, CancellationToken token)
+    {
+        var isManager = await _db.ManagementRelationships.FirstOrDefaultAsync(r => r.ManagerId == user.UserId, token);
+        return isManager == null ? RoleEligibility.IndividualContributor : RoleEligibility.Manager;
     }
 }
+
