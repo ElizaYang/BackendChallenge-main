@@ -17,22 +17,13 @@ It should display the text "working".
 ```
 https://localhost:7076/test
 ```
-4. Call user endpoint with UserToken in header
-```
-https://localhost:7076/users
-```
-5. Call learningPlan endpoint with UserToken in header
-```
-https://localhost:7076/learning-plan
-```
-6. Call incentives endpoint with UserToken in header
-```
-https://localhost:7076/incentives
-```
-## Written Portion
-### API Questions
+
+# Written Portion
+
+## API Questions
+
 * How many active users are there for UserToken = 1MEYQDDgwrTkYPtu7Vhfyjp7qkuGnf4ztR company?
-** 4
+    4
     ```
     [
         {
@@ -86,7 +77,7 @@ https://localhost:7076/incentives
     ]
     ```
 * How many incentives is UserToken = 1DeyjK5vvSwjc9o9jYArVo2yov2SnjnXEE eligible for?
-** 2
+    2
     ```
     {
         "userId": 4,
@@ -106,29 +97,28 @@ https://localhost:7076/incentives
         ]
     }
     ```
-### Test Plan
-<GetUsers API Endpoint>
+## Test Plan
+
+### GetUsers API Endpoint
 
 1. Test case: Valid request returns 200 OK response and user data
 
-    *Preconditions:
-    There are active users for the company of the querying user in the database
-    A valid user token is passed in the request header
+    * Preconditions:
+        * There are active users for the company of the querying user in the database
+        * A valid user token is passed in the request header
     * Test steps:
-        * Send a GET request to the users endpoint with a valid user token in the request header
-        * Verify that the response status code is 200 OK
-        * Verify that the response body contains an array of UserResponses including userId, firstName, and lastName
-        * Verify that the user data in the response matches the user data in the database
+        - [ ] Send a GET request to the users endpoint with a valid user token in the request header
+        - [ ] Verify that the response status code is 200 OK
+        - [ ] Verify that the response body contains an array of UserResponses including userId, firstName, and lastName
+        - [ ] Verify that the user data in the response matches the user data in the database
 
 2. Test case: Unauthorized request returns 401 Unauthorized response
 
-Preconditions:
-
-A user token is not passed in the request header or is empty/null
-Test steps:
-
-Send a GET request to the users endpoint without a user token in the request header
-Verify that the response status code is 401 Unauthorized
+    * Preconditions:
+        * A user token is not passed in the request header or is empty/null
+        * Test steps:
+        - [ ] Send a GET request to the users endpoint without a user token in the request header
+        - [ ] Verify that the response status code is 401 Unauthorized
 
 3. Test case: Nonexistent user token returns 404 Not Found response
 
