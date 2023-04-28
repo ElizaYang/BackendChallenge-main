@@ -1,5 +1,5 @@
 # Backend Challenge Starter
-This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the **coding portion**(#Coding Portion) and the **written portion**(# Written Portion).
+This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the **coding portion**(#coding-portion) and the **written portion**(#written-portion).
 
 ![Product Name Screen Shot](images/screenshot.png)
 # Coding Portion
@@ -14,7 +14,7 @@ git clone https://github.com/ElizaYang/BackendChallenge-main.git
 ```sh
 dotnet run
 ```
-3. Verify it's working by navigating to this endpoint in your browser (you may need to change the port based on what address is shown when you run project).
+3. Verify it's working by navigating to this endpoint in your browser (you don't need to pass userToken in header).
 It should display the text "working".
 ```
 https://localhost:7076/test
