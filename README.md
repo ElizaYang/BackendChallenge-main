@@ -1,15 +1,16 @@
 # Backend Challenge Starter
-This is a template project to save you the hassle of having to set up your project from scratch. 
-You're free to change it however you want or start from scratch. Whatever is easiest for you.
+This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the coding portion and the written portion.
+[![Product Name Screen Shot][product-screenshot]] [product-screenshot]: images/screenshot.png
+# Coding Portion
 
-# Running the project
+##  Running the project
 _assumes you have .NET Core 6 installed_
-1. Navigate to the backend challenge folder
-```
-cd ./BackendChallenge
+1. Clone the project to your local 
+```sh
+git clone https://github.com/ElizaYang/BackendChallenge-main.git
 ```
 2. Run the project
-```
+```sh
 dotnet run
 ```
 3. Verify it's working by navigating to this endpoint in your browser (you may need to change the port based on what address is shown when you run project).
@@ -17,14 +18,17 @@ It should display the text "working".
 ```
 https://localhost:7076/test
 ```
-
+4. Go to swagger to check endpoint details
+```
+https://localhost:7076/swagger/index.html
+```
 # Written Portion
 
 ## API Questions
 
 * How many active users are there for UserToken = 1MEYQDDgwrTkYPtu7Vhfyjp7qkuGnf4ztR company?
-    4
-    ```
+    * 4
+    ```json
     [
         {
             "userId": 1,
@@ -49,7 +53,7 @@ https://localhost:7076/test
     ]
     ```
 * What does the JSON of the user plan for UserToken = 1F7Xg1CJdffsnv9uEXj6GhLERQSam4xwx6 look like?
-    ```
+    ```json
     [
         {
             "userId": 2,
@@ -77,8 +81,8 @@ https://localhost:7076/test
     ]
     ```
 * How many incentives is UserToken = 1DeyjK5vvSwjc9o9jYArVo2yov2SnjnXEE eligible for?
-    2
-    ```
+    * 2
+    ```json
     {
         "userId": 4,
         "eligibleIncentiveResponse": [
@@ -98,9 +102,26 @@ https://localhost:7076/test
     }
     ```
 ## Test Plan
+There are different types of tests:
+1. Unit Testing: User NUnit to ensure that individual functions or methods of the API work as intended.
+2. Integration Testing: To ensure that the interaction between different parts of the API works correctly. Ex: sql connection...
+3. Functional Testing: To ensure that the overall functionality of the API meets the requirements.
+4. Performance Testing: To ensure that the API can handle a heavy load of requests while providing optimal performance. Might need a simulator to generate loads.
 
-### GetUsers API Endpoint
+Below, I will focus on the **functional tests** and I will cover the following aspects:
+* Testing of various types of input to ensure that they are validated correctly and that appropriate error messages are returned.
+* Testing of database connectivity and queries to ensure that data is being retrieved and updated correctly.
+* Testing of response formatting and error messages to ensure that they are displayed correctly.
+* Testing of authentication and authorization to ensure that only authorized users have access to the API.
+* Testing of API endpoints to ensure that they function correctly under various conditions.
+Note: To test the database connectivity, we may need to use a separate testing database or mock the database context to return specific values for testing purposes.
 
+### Test Cases 
+
+### Get users API Endpoint
+```
+/users
+```
 1. Test case: Valid request returns 200 OK response and user data
 
     * Preconditions:
@@ -122,21 +143,83 @@ https://localhost:7076/test
 
 3. Test case: Nonexistent user token returns 404 Not Found response
 
-Preconditions:
-
-A user token passed in the request header does not match any user token in the database
-Test steps:
-
-Send a GET request to the users endpoint with a nonexistent user token in the request header
-Verify that the response status code is 404 Not Found
+    * Preconditions:
+        * A user token passed in the request header does not match any user token in the database
+    * Test steps:
+    - [ ] Send a GET request to the users endpoint with a nonexistent user token in the request header
+    - [ ] Verify that the response status code is 404 Not Found
 
 4. Test case: Cancelled request returns 500 Internal Server Error response
 
-Preconditions:
+    * Preconditions:
+        * The request is cancelled before completing the database query
+    * Test steps:
+        - [ ] Send a GET request to the users endpoint with a valid user token in the request header and a - [ ] cancellation token
+        - [ ] Cancel the request before the database query completes
+        - [ ] Verify that the response status code is 500 Internal Server Error
 
-The request is cancelled before completing the database query
-Test steps:
+### Get learning-plan API Endpoint
+```
+/learning-plan
+```
+1. Test case: Valid request returns 200 OK response and learning plan data
 
-Send a GET request to the users endpoint with a valid user token in the request header and a cancellation token
-Cancel the request before the database query completes
-Verify that the response status code is 500 Internal Server Error
+    * Preconditions:
+        * There are learning plans with related items, courses, and incentives in the database for the company of the querying user
+        * A valid user token is passed in the request header
+    * Test steps:
+        - [ ] Send a GET request to the learning plan endpoint with a valid user token in the request header
+        - [ ] Verify that the response status code is 200 OK
+        - [ ] Verify that the response body contains an array of LearningPlanResponses including UserId and an array of PlanItemResponses, each containing LearningPlanItemId, LearningItemType, LearningItemName, and ItemId
+        - [ ] Verify that the learning plan data in the response matches the learning plan data in the database
+
+2. Test case: Unauthorized request returns 401 Unauthorized response
+    * Same as get users endpoint test case 2.
+
+3. Test case: Nonexistent user token returns 404 Not Found response
+    * Same as get users endpoint test case 3.
+
+4. Test case: Empty learning plan returns 200 OK response and empty array
+
+    * Preconditions:
+        * There are no learning plans with related items, courses, and incentives for the company of the querying user in the database
+    * Test steps:
+    - [ ] Send a GET request to the learning plan endpoint with a valid user token in the request header
+    - [ ] Verify that the response status code is 200 OK
+    - [ ] Verify that the response body contains an empty array of LearningPlanResponses
+
+5. Test case: Cancelled request returns 500 Internal Server Error response
+    * Same as get users endpoint test case 4.
+
+### Get incentives API Endpoint
+```
+/incentives
+```
+1. Test case: Valid request returns 200 OK response and correct incentives data
+
+    * Preconditions:
+        * There are incentives with related items, roles, and incentives in the database for the company of the querying user
+        * A valid user token is passed in the request header
+    * Test steps:
+        - [ ] Send a GET request to the incentives endpoint with a valid user token in the request header
+        - [ ] Verify that the response status code is 200 OK
+        - [ ] Verify that the response body contains an array of IncentiveResponses including UserId and an array of EligibleIncentiveResponse, each containing IncentiveId, IncentiveName, ServiceRequirement, and roleEligibility
+        - [ ] Verify that the incentives data in the response matches the eligible incentives data in the database
+
+2. Test case: Unauthorized request returns 401 Unauthorized response
+    * Same as get users endpoint test case 2.
+
+3. Test case: Nonexistent user token returns 404 Not Found response
+    * Same as get users endpoint test case 3.
+
+4. Test case: Empty incentives returns 200 OK response and empty array
+
+    * Preconditions:
+        * There are no incentive with related user, role and service requirement for the company of the querying user in the database
+    * Test steps:
+    - [ ] Send a GET request to the incentive endpoint with a valid user token in the request header
+    - [ ] Verify that the response status code is 200 OK
+    - [ ] Verify that the response body contains an empty array of IncentiveResponses
+
+5. Test case: Cancelled request returns 500 Internal Server Error response
+    * Same as get users endpoint test case 4.
