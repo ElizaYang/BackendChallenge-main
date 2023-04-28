@@ -1,5 +1,5 @@
 # Backend Challenge Starter
-This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the coding portion(#Coding-Portion) and the **written portion**(#written-portion).
+This is an API challenge project implemened 3 endpoints accepting requests and writing queries to extract data. There are 2 parts to the challenge: the [coding portion](#Coding-Portion) and the [written portion](#written-portion).
 
 ![Product Name Screen Shot](images/screenshot.png)
 # Coding Portion
