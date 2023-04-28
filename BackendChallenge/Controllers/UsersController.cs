@@ -22,11 +22,12 @@ public class UsersController : ControllerBase
     /// Response Type: array of UserResponses - userId, firstName, lastName
     /// </summary>
     [HttpGet(Name = "GetUsers")]
-    public async Task<ActionResult<IEnumerable<UserResponses>>> Index([FromHeader]String userToken, CancellationToken token)
+    public async Task<ActionResult<IEnumerable<UserResponse>>> Index([FromHeader]String userToken, CancellationToken token)
     {
-        if (userToken == null) {
-            return Unauthorized();
-        }
+        if (string.IsNullOrWhiteSpace(userToken))
+            {
+                return Unauthorized();
+            }
         
         // get token entry from db
         var curUserToken = await _db.UserTokens.FindAsync(userToken);
@@ -38,20 +39,11 @@ public class UsersController : ControllerBase
         if (curUser == null) {
             return NotFound();
         }
+        var users = await _db.Users
+                .Where(u => u.CompanyId == curUser.CompanyId)
+                .Select(u => new UserResponse { UserId = u.UserId, FirstName = u.FirstName, LastName = u.LastName })
+                .ToListAsync(token);
 
-        return await _db.Users
-            .Where(x => x.CompanyId == curUser.CompanyId)
-            .Select(user => UserToDTO(user))
-            .ToListAsync();
+        return Ok(users);
     }
-
-    private static UserResponses UserToDTO(User user) => 
-        new UserResponses
-        {
-            UserId = user.UserId,
-            FirstName = user.FirstName,
-            LastName = user.LastName
-        };
-
-    
 }

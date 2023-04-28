@@ -3,7 +3,7 @@ namespace BackendChallenge.Models;
 /// <summary>
 /// Represents a user DTO in the system
 /// </summary>
-public class UserResponses
+public class UserResponse
 {
     // Unique ID for the user
     public int UserId { get; set; }
