@@ -29,8 +29,84 @@ https://localhost:7076/learning-plan
 ```
 https://localhost:7076/incentives
 ```
-
-Test Plan
+## Written Portion
+### API Questions
+* How many active users are there for UserToken = 1MEYQDDgwrTkYPtu7Vhfyjp7qkuGnf4ztR company?
+** 4
+    ```
+    [
+        {
+            "userId": 1,
+            "firstName": "Karalynn",
+            "lastName": "Northcote"
+        },
+        {
+            "userId": 2,
+            "firstName": "Sean",
+            "lastName": "Carter"
+        },
+        {
+            "userId": 3,
+            "firstName": "Fielding",
+            "lastName": "Cabera"
+        },
+        {
+            "userId": 4,
+            "firstName": "Dan",
+            "lastName": "Fawlkes"
+        }
+    ]
+    ```
+* What does the JSON of the user plan for UserToken = 1F7Xg1CJdffsnv9uEXj6GhLERQSam4xwx6 look like?
+    ```
+    [
+        {
+            "userId": 2,
+            "planItems": [
+                {
+                    "learningPlanItemId": 3,
+                    "learningItemType": 0,
+                    "learningItemName": "Managerial Economics",
+                    "itemId": 4
+                },
+                {
+                    "learningPlanItemId": 4,
+                    "learningItemType": 0,
+                    "learningItemName": "Design Thinking",
+                    "itemId": 5
+                },
+                {
+                    "learningPlanItemId": 5,
+                    "learningItemType": 1,
+                    "learningItemName": "Completion Bonus",
+                    "itemId": 1
+                }
+            ]
+        }
+    ]
+    ```
+* How many incentives is UserToken = 1DeyjK5vvSwjc9o9jYArVo2yov2SnjnXEE eligible for?
+** 2
+    ```
+    {
+        "userId": 4,
+        "eligibleIncentiveResponse": [
+            {
+                "incentiveId": 1,
+                "incentiveName": "Completion Bonus",
+                "serviceRequirement": 90,
+                "roleEligibility": 0
+            },
+            {
+                "incentiveId": 3,
+                "incentiveName": "20% Time",
+                "serviceRequirement": 90,
+                "roleEligibility": 1
+            }
+        ]
+    }
+    ```
+### Test Plan
 <GetUsers API Endpoint>
 
 1. Test case: Valid request returns 200 OK response and user data
@@ -38,11 +114,11 @@ Test Plan
     *Preconditions:
     There are active users for the company of the querying user in the database
     A valid user token is passed in the request header
-    *Test steps:
-        *Send a GET request to the users endpoint with a valid user token in the request header
-        *Verify that the response status code is 200 OK
-        *Verify that the response body contains an array of UserResponses including userId, firstName, and lastName
-        *Verify that the user data in the response matches the user data in the database
+    * Test steps:
+        * Send a GET request to the users endpoint with a valid user token in the request header
+        * Verify that the response status code is 200 OK
+        * Verify that the response body contains an array of UserResponses including userId, firstName, and lastName
+        * Verify that the user data in the response matches the user data in the database
 
 2. Test case: Unauthorized request returns 401 Unauthorized response
 
