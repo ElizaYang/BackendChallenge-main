@@ -105,7 +105,7 @@ https://localhost:7076/swagger/index.html
 ## Test Plan
 The testing strategy for this API includes different types of tests to ensure the overall quality of the system. These include:
 
-1. Unit Testing: User NUnit to ensure that individual functions or methods of the API work as intended.
+1. Unit Testing: Use NUnit to ensure that individual functions or methods of the API work as intended.
 2. Integration Testing: To ensure that the interaction between different parts of the API works correctly. Ex: sql connection...
 3. Functional Testing: To ensure that the overall functionality of the API meets the requirements.
 4. Performance Testing: To ensure that the API can handle a heavy load of requests while providing optimal performance. Using a simulator to generate loads...
